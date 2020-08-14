@@ -40,14 +40,34 @@ int sampleFunction(int);
   */
 int main(void)
 {
-  bsp_config();
+  /* Standard Hal Initialization */
+  HAL_Init();
+
+  /* Clock Setup */
+  ClockInitStruct init;
+  init.ClockSource = CLOCK_SOURCE_HSE;
+  init.SystemFrequency = SYS_FREQ_100MHZ;
+  init.HSEMultiplier = 432;
+  init.HSEDivider1 =  25;
+  init.HSEDivider2 = RCC_PLLP_DIV2;
+  init.HSE48CKDivider = 2;
+  init.AHBClkDivider = RCC_SYSCLK_DIV1;
+  init.APB1ClkDivider = RCC_HCLK_DIV4;
+  init.APB2ClkDivider = RCC_HCLK_DIV2;
+  SystemClock_Config(init);
   
-  /* User Code */
+  /* GPIO Configuration */
+  __HAL_RCC_GPIOE_CLK_ENABLE();  // This will eventually be handled automatically by the hardware manager
+  DigitalOut led(LED1, PullNone, PushPull);
+  int num = 0;
 
   /* Infinite loop */
   while (1)
   {
-      /* User Code */
+     if (num%10000 == 0)
+     {
+       led.toggle();
+     }
   }
 
 }

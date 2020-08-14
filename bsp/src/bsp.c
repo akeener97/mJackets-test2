@@ -1,50 +1,17 @@
-
-/**
-  ******************************************************************************
-  * @file           : bsp.c
-  * @brief          : Hardware intialization code
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; Copyright (c) 2020 RoboJackets.
-  * All rights reserved.</center></h2>
-  *
-  * This software component is licensed by RoboJackets under Apache License
-  * 2.0; You may not use this file except in compliance with the License. You 
-  * may obtain a copy of the License at: 
-  *                    https://www.apache.org/licenses/LICENSE-2.0
-  ******************************************************************************
-  */
-
-/* Includes ------------------------------------------------------------------*/
-
 #include "bsp.h"
 #include  <unistd.h>
 
-#if defined STM32F405xx
-    #include "stm32f4xx_hal.h"
-    #include "stm32f4xx_hal_conf.h"
-    #include "stm32f4xx.h"
-#endif
-#if defined STM32F7
-    #include "stm32f7xx_hal.h"
-    #include "stm32f7xx_hal_conf.h"
-    #include "stm32f7xx.h"
-#endif
+// TODO: make this better
+USBD_HandleTypeDef USBD_Device;
 
-/* Private user code ---------------------------------------------------------*/
-
-/**
-  * @brief Board Hardware Intialization
-  * @retval None
-  */
 void bsp_config(void) {
-
-  /* Standard Hal Initialization */
+  MPU_Config();
+  CPU_CACHE_Enable();
   HAL_Init();
   SystemClock_Config();
-  
-  /* Enable GPIO Clocks */
+  DWT_Config();
+
+  // Enable all needed system clocks
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -55,6 +22,22 @@ void bsp_config(void) {
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOI_CLK_ENABLE();
 
+  USBD_Init(&USBD_Device, &VCP_Desc, 0);
+  USBD_RegisterClass(&USBD_Device, USBD_CDC_CLASS);
+  USBD_CDC_RegisterInterface(&USBD_Device, &USBD_CDC_fops);
+  USBD_Start(&USBD_Device);
+}
+
+// TODO: find better spot for this
+int _write(int file, char *data, int len)
+{
+    extern void DWT_Delay(uint32_t);
+    if (file == STDOUT_FILENO) {
+        USBD_CDC_SetTxBuffer(&USBD_Device, (uint8_t*)data, len);
+        USBD_CDC_TransmitPacket(&USBD_Device);
+        DWT_Delay(1000); // TODO: why not blocking?
+    }
+    return 0;
 }
 
 /**
@@ -101,6 +84,12 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /**Activate the Over-Drive mode 
+  */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
   {
     Error_Handler();
   }
@@ -171,6 +160,22 @@ void MPU_Config(void)
   * @param  None
   * @retval None
   */
+void CPU_CACHE_Enable(void)
+{
+  /* Enable I-Cache */
+  SCB_EnableICache();
+
+  /* Enable D-Cache */
+  SCB_EnableDCache();
+}
+
+void DWT_Config(void)
+{
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  DWT->LAR = 0xC5ACCE55; 
+  DWT->CYCCNT = 0;
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+}
 
 #ifdef  USE_FULL_ASSERT
 
