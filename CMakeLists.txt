@@ -12,13 +12,13 @@ add_definitions(-DSTM32F7)
 add_subdirectory(mjackets-api)
 add_subdirectory(bsp)
 
+# Source files go here!
 set(PROJECT_SOURCES
 	main.cpp
 )
 
-# Add any additional source files here
-add_executable(${CMAKE_PROJECT_NAME} ${PROJECT_SOURCES} ${CMSIS_SOURCES} ${BSP_SOURCES} ${HAL_${FAMILY}_SOURCES})
+add_executable(${CMAKE_PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC API BSP)
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC API)
 
 STM32_ADD_HEX_BIN_TARGETS(${CMAKE_PROJECT_NAME})
