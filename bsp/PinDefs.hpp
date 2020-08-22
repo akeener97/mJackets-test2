@@ -27,5 +27,7 @@ typedef enum {
 
 
 /* Sample Pin Definition - Replace with the pin definition for your board!! */
-const PinName LED1 { GPIOE, GPIO_PIN_4 };
-const PinName LED2 { GPIOE, GPIO_PIN_3 };
+constexpr PinName LED1 { GPIOE, GPIO_PIN_4 };
+constexpr PinName LED2 { GPIOE, GPIO_PIN_3 };
+constexpr PinName LED3 { GPIOE, GPIO_PIN_6 };
+constexpr PinName LED4 { GPIOE, GPIO_PIN_5 };

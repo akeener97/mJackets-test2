@@ -41,6 +41,8 @@ int sampleFunction(int);
 int main(void)
 {
   /* Standard Hal Initialization */
+  MPU_Config();
+  CPU_CACHE_Enable();
   HAL_Init();
 
   /* Clock Setup */
@@ -54,20 +56,38 @@ int main(void)
   init.AHBClkDivider = RCC_SYSCLK_DIV1;
   init.APB1ClkDivider = RCC_HCLK_DIV4;
   init.APB2ClkDivider = RCC_HCLK_DIV2;
+  init.FlashLatency = 7;
   SystemClock_Config(init);
-  
+
+  DWT_Config();
+
   /* GPIO Configuration */
   __HAL_RCC_GPIOE_CLK_ENABLE();  // This will eventually be handled automatically by the hardware manager
-  DigitalOut led(LED1, PullNone, PushPull);
-  int num = 0;
+  DigitalOut led1(LED1, PullNone, PushPull);
+  DigitalOut led2(LED2, PullNone, PushPull);
+  DigitalOut led3(LED3, PullNone, PushPull);
+  DigitalOut led4(LED4, PullNone, PushPull);
+
+  uint32_t num = 0;
 
   /* Infinite loop */
   while (1)
   {
-     if (num%10000 == 0)
-     {
-       led.toggle();
-     }
+    if (num == 10000000)
+    {
+      led1.toggle();
+      led4.toggle();
+      num = 0;
+    }
+    else if (num == 5000000)
+    {
+      led2.toggle();
+    }
+    else if (num % 2500000 == 0)
+    {
+      led3.toggle();
+    }
+    num = num + 1;
   }
 
 }
