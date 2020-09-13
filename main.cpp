@@ -73,21 +73,9 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-    if (num == 10000000)
-    {
-      led1.toggle();
-      led4.toggle();
-      num = 0;
-    }
-    else if (num == 5000000)
-    {
-      led2.toggle();
-    }
-    else if (num % 2500000 == 0)
-    {
-      led3.toggle();
-    }
-    num = num + 1;
+    led1.toggle();
+    led4.toggle();
+    DelayMs(200);
   }
 
 }
