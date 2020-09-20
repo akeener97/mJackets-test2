@@ -95,6 +95,7 @@
 #define HAL_DSI_MODULE_ENABLED
 #define HAL_JPEG_MODULE_ENABLED
 #define HAL_MDIOS_MODULE_ENABLED
+#define HAL_EXTI_MODULE_ENABLED
 
 
 /* ########################## HSE/HSI Values adaptation ##################### */
@@ -423,6 +424,10 @@
 #ifdef HAL_MDIOS_MODULE_ENABLED
  #include "stm32f7xx_hal_mdios.h"
 #endif /* HAL_MDIOS_MODULE_ENABLED */
+
+#ifdef HAL_EXTI_MODULE_ENABLED
+ #include "stm32f7xx_hal_exti.h"
+#endif /* HAL_EXTI_MODULE_ENABLED */
    
 /* Exported macro ------------------------------------------------------------*/
 #ifdef  USE_FULL_ASSERT
