@@ -75,7 +75,7 @@ int main(void)
   {
     led1.toggle();
     led4.toggle();
-    DelayMs(200);
+    HAL_Delay(200);
   }
 
 }
