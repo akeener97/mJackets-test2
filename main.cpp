@@ -68,6 +68,9 @@ int main(void)
   DigitalOut led3(LED3, PullNone, PushPull);
   DigitalOut led4(LED4, PullNone, PushPull);
 
+  DigitalIn my_input1(p25, PullDown);
+  DigitalIn my_input2(p26, PullDown);
+
   uint32_t num = 0;
 
   /* Infinite loop */
@@ -76,6 +79,9 @@ int main(void)
     led1.toggle();
     led4.toggle();
     HAL_Delay(200);
+
+    led2.write(my_input1.Read());
+    led3.write(my_input2);
   }
 
 }
