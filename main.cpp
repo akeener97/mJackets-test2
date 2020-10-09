@@ -76,12 +76,12 @@ int main(void)
   /* Infinite loop */
   while (1)
   {
-    led1.toggle();
-    led4.toggle();
+    led1.Toggle();
+    led4.Toggle();
     HAL_Delay(200);
 
-    led2.write(my_input1.Read());
-    led3.write(my_input2);
+    led2.Write(my_input1.Read());
+    led3.Write(my_input2);
   }
 
 }
